@@ -1,1 +1,2 @@
-# node_api_sample
+# A Node API
+A basic node api using the express framework.  
