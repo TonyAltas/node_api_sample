@@ -3,25 +3,25 @@ var router = express.Router();
 var url = require('url');
 var contacts = require('../modules/contacts');
 var mongoose = require('mongoose');
-var dataservice = require('../modules/contactdataservice');
-
-mongoose.connect('mongodb://localhost/contacts');
+var dataservice = require('../modules/contactdataservice_1');
 
 
-var contactSchema = new mongoose.Schema({
-	primarycontactnumber: {type: String, index: {unique:
-	true}},
-	 firstname: String,
-	 lastname: String,
-	 title: String,
-	 company: String,
-	 jobtitle: String,
-	 othercontactnumbers: [String],
-	 primaryemailaddress: String,
-	 emailaddresses: [String],
-	 groups: [String]
-});
-var Contact = mongoose.model('Contact', contactSchema);
+
+//var contactSchema = new mongoose.Schema({
+//	primarycontactnumber: {type: String, index: {unique:
+//	true}},
+//	 firstname: String,
+//	 lastname: String,
+//	 title: String,
+//	 company: String,
+//	 jobtitle: String,
+//	 othercontactnumbers: [String],
+//	 primaryemailaddress: String,
+//	 emailaddresses: [String],
+//	 groups: [String]
+//});
+//var Contact = mongoose.model('Contact', contactSchema);
+var Contact = require('../model/contact.js');
 
 
 

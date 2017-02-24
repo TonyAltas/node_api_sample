@@ -6,10 +6,13 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
-var contacts = require('./routes/contacts');
+var contacts_1 = require('./routes/contacts_1');
+var contacts_2 = require('./routes/contacts_2');
 
 var app = express();
+var mongoose = require('mongoose');
 
+mongoose.connect('mongodb://localhost/contacts');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -24,7 +27,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
-app.use('/', contacts);
+app.use('/v1/', contacts_1);
+app.use('/v2/', contacts_2);
+
+app.get('/contacts', function(request, response) {
+	response.writeHead(301, {'Location' : '/v1/contacts/'});
+	response.end('Version 1 is moved to /contacts/: ');
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
