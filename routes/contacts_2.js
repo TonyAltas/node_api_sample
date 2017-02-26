@@ -3,7 +3,7 @@ var router = express.Router();
 var url = require('url');
 var contacts = require('../modules/contacts');
 var mongoose = require('mongoose');
-var dataservice = require('../modules/contactdataservice_1');
+var dataserviceV2 = require('../modules/contactdataservice_2');
 
 
 
@@ -40,24 +40,33 @@ var Contact = require('../model/contact.js');
 //});
 
 router.get('/contacts', function(request, response) {
+	var get_params = url.parse(request.url, true).query;
+	if (Object.keys(get_params).length == 0)
+{
 	console.log('Listing all contacts with ' +
 		request.params.key + '=' + request.params.value);
-	dataservice.list(Contact, response);
+	dataserviceV2.list(Contact, response);
+}
+	else {
+		var key = Object.keys(get_params)[0];
+		var value = get_params[key];
+		JSON.stringify(dataserviceV2.query_by_arg(Contact, key,value, response));
+	}
 });
 router.get('/contacts/:number', function(request, response) {
 	console.log(request.url + ' : querying for ' +
 		request.params.number);
-	dataservice.findByNumber(Contact, request.params.number,
+	dataserviceV2.findByNumber(Contact, request.params.number,
 		response);
 });
 router.post('/contacts', function(request, response) {
-	dataservice.update(Contact, request.body, response)
+	dataserviceV2.update(Contact, request.body, response)
 });
 router.put('/contacts', function(request, response) {
-	dataservice.create(Contact, request.body, response)
+	dataserviceV2.create(Contact, request.body, response)
 });
 router.delete('/contacts/:primarycontactnumber', function(request, response) {
-	dataservice.remove(Contact,
+	dataserviceV2.remove(Contact,
 		request.params.primarycontactnumber, response);
 });
 

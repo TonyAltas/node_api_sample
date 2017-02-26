@@ -218,7 +218,7 @@ exports.list = function (model, response) {
 			return null;
 		}
 		if (response != null) {
-			response.setHeader('content-type',
+			response.setHeader('Content-Type',
 				'application/json');
 			response.end(JSON.stringify(result));
 		}

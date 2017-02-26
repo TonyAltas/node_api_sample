@@ -218,10 +218,39 @@ exports.list = function (model, response) {
 			return null;
 		}
 		if (response != null) {
-			response.setHeader('content-type',
+			response.setHeader('Content-Type',
 				'application/json');
 			response.end(JSON.stringify(result));
 		}
 		return JSON.stringify(result);
 	});
 }
+
+exports.query_by_arg = function (model, key, value, response) {
+	//build a JSON string with the attribute and the value
+	var filterArg = '{"'+key + '":' +'"'+ value + '"}';
+	var filter = JSON.parse(filterArg);
+	model.find(filter, function(error, result) {
+	if (error) {
+		console.error(error);
+		response.writeHead(500, {'Content-Type' :
+			'text/plain'});
+		response.end('Internal server error');
+		return;
+	} else {
+		if (!result) {
+			if (response != null) {
+				response.writeHead(404, {'Content-Type' :
+					'text/plain'});
+				response.end('Not Found');
+			}
+			return;
+		}
+		if (response != null){
+			response.setHeader('Content-Type',
+				'application/json');
+			response.send(result);
+		}
+	}
+	});
+};
