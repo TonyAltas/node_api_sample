@@ -1,3 +1,10 @@
+var mongoose = require('mongoose');
+var Grid = require('gridfs-stream');
+
+var mongodb = mongoose.connection;
+var gfs = Grid(mongodb.db, mongoose.mongo);
+
+
 exports.remove = function (model, _primarycontactnumber, response) {
 	console.log('Deleting contact with primary number: ' 
 			+ _primarycontactnumber);
@@ -253,4 +260,34 @@ exports.query_by_arg = function (model, key, value, response) {
 		}
 	}
 	});
+};
+
+exports.updateImage = function(gfs, request, response) {
+	var _primarycontactnumber = 
+		request.params.primarycontactnumber;
+	console.log('Updating image for primary contact number:'
+			+_primarycontactnumber);
+	request.pipe(gfs.createWriteStream({
+		_id : _primarycontactnumber,
+		filename : 'image',
+		mode : 'w'
+	}));
+	response.send("Successfully uploaded image for primary
+			contact number: "+ _primarycontactnumber);
+};
+
+exports.getImage = function(gfs, _primarycontactnumber, response) {
+	console.log('Requesting image for primary contact
+			number: ' + _primarycontactnumber);
+	var imageStream = gfs.createReadStream({
+		_id : _primarycontactnumber,
+		 filename : 'image',
+		 mode : 'r'
+	});
+	imageStream.on('error', function(error) {
+		response.send('404', 'Not found');
+		return;
+	});
+	response.setHeader('Content-Type', 'image/jpeg);
+	imageStream.pipe(response);
 };

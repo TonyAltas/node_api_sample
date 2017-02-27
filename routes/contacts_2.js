@@ -5,7 +5,10 @@ var contacts = require('../modules/contacts');
 var mongoose = require('mongoose');
 var dataserviceV2 = require('../modules/contactdataservice_2');
 
-
+//var Grid = require('gridfs-stream');
+//
+//var mongodb = mongoose.connection;
+//var gfs = Grid(mongodb.db, mongoose.mongo);
 
 //var contactSchema = new mongoose.Schema({
 //	primarycontactnumber: {type: String, index: {unique:
