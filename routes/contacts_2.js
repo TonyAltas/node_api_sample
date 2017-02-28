@@ -5,10 +5,13 @@ var contacts = require('../modules/contacts');
 var mongoose = require('mongoose');
 var dataserviceV2 = require('../modules/contactdataservice_2');
 
-//var Grid = require('gridfs-stream');
-//
-//var mongodb = mongoose.connection;
+var Grid = require('gridfs-stream');
+
+var mongodb = mongoose.connection;
 //var gfs = Grid(mongodb.db, mongoose.mongo);
+mongodb.once('open', function(){
+	var gfs = Grid(mongodb.db, mongoose.mongo);
+});
 
 //var contactSchema = new mongoose.Schema({
 //	primarycontactnumber: {type: String, index: {unique:
@@ -72,8 +75,20 @@ router.delete('/contacts/:primarycontactnumber', function(request, response) {
 	dataserviceV2.remove(Contact,
 		request.params.primarycontactnumber, response);
 });
+router.post('/contacts/:primarycontactnumber/image',function(request, response){
+	var gfs = Grid(mongodb.db, mongoose.mongo);
+	dataserviceV2.updateImage(gfs, request, response);
+})
 
+router.get('/contacts/:primarycontactnumber/image', function(request, response){
+	var gfs = Grid(mongodb.db, mongoose.mongo);
+	dataserviceV2.getImage(gfs, request.params.primarycontactnumber,
+		response);
+})
 
+//mongodb.once('open', function(){
+//	var gfs = Grid(mongodb.db, mongoose.mongo);
+//});
 
 
 //router.get('/contacts/:number', function(req, res) {

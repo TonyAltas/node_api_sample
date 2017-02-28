@@ -1,8 +1,8 @@
-var mongoose = require('mongoose');
-var Grid = require('gridfs-stream');
-
-var mongodb = mongoose.connection;
-var gfs = Grid(mongodb.db, mongoose.mongo);
+//var mongoose = require('mongoose');
+//var Grid = require('gridfs-stream');
+//
+//var mongodb = mongoose.connection;
+//var gfs = Grid(mongodb.db, mongoose.mongo);
 
 
 exports.remove = function (model, _primarycontactnumber, response) {
@@ -272,13 +272,11 @@ exports.updateImage = function(gfs, request, response) {
 		filename : 'image',
 		mode : 'w'
 	}));
-	response.send("Successfully uploaded image for primary
-			contact number: "+ _primarycontactnumber);
+	response.send("Successfully uploaded image for primary contact number: "+ _primarycontactnumber);
 };
 
 exports.getImage = function(gfs, _primarycontactnumber, response) {
-	console.log('Requesting image for primary contact
-			number: ' + _primarycontactnumber);
+	console.log('Requesting image for primary contactnumber: ' + _primarycontactnumber);
 	var imageStream = gfs.createReadStream({
 		_id : _primarycontactnumber,
 		 filename : 'image',
@@ -288,6 +286,28 @@ exports.getImage = function(gfs, _primarycontactnumber, response) {
 		response.send('404', 'Not found');
 		return;
 	});
-	response.setHeader('Content-Type', 'image/jpeg);
+	response.setHeader('Content-Type', 'image/jpeg');
 	imageStream.pipe(response);
 };
+
+exports.deleteImage = function(gfs, mongodb, _primarycontactnumber,response) {
+	console.log('Deleting image for primary contact number:'
+			+ _primarycontactnumber);
+	var collection = mongodb.collection('fs.files');
+	collection.remove({_id: _primarycontactnumber,
+		filename: 'image'},
+		function (error, contact) {
+			if (error) {
+				console.log(error);
+				return;
+			}
+			if (contact === null) {
+				response.send('404', 'Not found');
+				return;
+			}
+			else {
+				console.log('Successfully deleted image for primary contact number:' + _primarycontactnumber);
+			}
+		});
+	response.send('Successfully deleted image for primary contact number: ' + _primarycontactnumber);
+}
